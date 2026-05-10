@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #A855F7;
+  --color-background: #000000;
+  --color-panel: #0a0a0a;
+  --color-border: #1a1a1a;
+  
+  /* Strict 12-Column Grid Gap */
+  --spacing-grid-gap: 24px;
+  
+  /* Mandatory Spacing System */
+  --spacing-micro: 8px;
+  --spacing-tight: 16px;
+  --spacing-standard: 24px;
+  --spacing-section: 40px;
+  --spacing-major: 64px;
+
+  /* Typography Dominance */
+  --font-size-h1: 82px;
+  --font-size-h2: 32px;
+  --font-size-h3: 10px;
+  --font-size-metric: 96px;
+
+  --animate-glow: glow 2s ease-in-out infinite;
+  --animate-pulse-glow: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes glow {
+  0%, 100% { filter: drop-shadow(0 0 5px #A855F7); }
+  50% { filter: drop-shadow(0 0 15px #A855F7); }
+}
+
+@keyframes pulse {
+  0%, 100% { border-color: rgba(168, 85, 247, 0.8); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+  50% { border-color: rgba(168, 85, 247, 0.2); box-shadow: 0 0 5px rgba(168, 85, 247, 0.1); }
+}
+
+@layer base {
+  body {
+    @apply bg-black text-white antialiased selection:bg-brand selection:text-black font-sans;
+  }
+
+  h1 {
+    @apply text-[82px] font-black tracking-tighter uppercase italic leading-[0.8] mb-10;
+  }
+
+  h2 {
+    @apply text-3xl font-black uppercase italic tracking-tighter mb-6 relative inline-block;
+  }
+
+  .section-glow::after {
+    content: '';
+    @apply absolute -bottom-1 left-0 w-full h-0.5 bg-brand shadow-[0_0_10px_#A855F7];
+  }
+
+  h3 {
+    @apply text-[10px] font-black text-white/30 tracking-[0.4em] uppercase mb-4;
+  }
+
+  /* Global Page Padding */
+  .page-container {
+    @apply px-16 py-10 min-h-screen;
+  }
+
+  /* 12-Column Foundation */
+  .grid-system {
+    @apply grid grid-cols-12 gap-6;
+  }
+
+  .main-panel {
+    @apply col-span-12 lg:col-span-8 space-y-16;
+  }
+
+  .side-panel {
+    @apply col-span-12 lg:col-span-4 space-y-10;
+  }
+
+  /* Standard Performance Block */
+  .performance-block {
+    @apply border border-white/5 bg-white/[0.02] p-5 lg:p-6 transition-all;
+  }
+
+  /* Interaction Primitives */
+  .btn-primary {
+    @apply bg-brand text-black font-black italic px-8 py-4 uppercase tracking-widest hover:scale-105 active:scale-95 transition-all;
+  }
+
+  .btn-outline {
+    @apply border border-white/10 text-white/60 font-black px-8 py-4 uppercase tracking-widest hover:border-brand hover:text-brand transition-all;
+  }
+
+  .glass-card {
+    @apply bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-none p-8;
+  }
+
+  .hud-pulse {
+    @apply border-2 border-brand/60 rounded-[40px] animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+}
+
+/* Custom Scrollbar for Industrial Feel */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: black;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a1a1a;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A855F7;
+}

@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(cuid())
+  email           String           @unique
+  password        String
+  name            String?
+  xp              Int              @default(0)
+  level           Int              @default(1)
+  streak          Int              @default(0)
+  targetCalories  Int              @default(2400)
+  targetProtein   Int              @default(150)
+  targetCarbs     Int              @default(250)
+  targetWater     Int              @default(2000)
+  tasks           Task[]
+  dietLogs        DietLog[]
+  workoutSessions WorkoutSession[]
+  workoutRoutines WorkoutRoutine[]
+  dailyScores     DailyScore[]
+  weeklyAnalyses  WeeklyAnalysis[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model Task {
+  id             String    @id @default(cuid())
+  title          String
+  priority       Int       // 1 to 10
+  isCompleted    Boolean   @default(false)
+  isSkipped      Boolean   @default(false)
+  datePlannedFor DateTime  // The date this task is assigned to
+  deadline       DateTime? // Optional specific time deadline
+  completedAt    DateTime? // When the task was completed
+  energyLevel    Int       @default(3) // 1 to 5
+  estimatedTime  Int       @default(30) // in minutes
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model DietLog {
+  id        String   @id @default(cuid())
+  date      DateTime // Date for the log
+  mealType  String   @default("total") // "breakfast" | "lunch" | "dinner" | "snacks" | "total"
+  foodItems String?  // JSON array: [{"name":"Oatmeal","calories":380}]
+  calories  Int
+  protein   Int
+  carbs     Int
+  fats      Int
+  mealItems MealItem[]
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Food {
+  id          String     @id @default(cuid())
+  name        String
+  brand       String?
+  calories    Float      // per 100g or per serving
+  protein     Float
+  carbs       Float
+  fats        Float
+  servingSize Float      @default(100)
+  servingUnit String     @default("g")
+  source      String     @default("USDA")
+  mealItems   MealItem[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model MealItem {
+  id        String   @id @default(cuid())
+  mealId    String
+  meal      DietLog  @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  foodId    String
+  food      Food     @relation(fields: [foodId], references: [id])
+  quantity  Float    // in serving units
+  createdAt DateTime @default(now())
+}
+
+model Exercise {
+  id           String       @id @default(cuid())
+  name         String       @unique
+  targetMuscle String
+  equipment    String
+  sets         WorkoutSet[]
+  createdAt    DateTime     @default(now())
+}
+
+model WorkoutRoutine {
+  id        String           @id @default(cuid())
+  name      String
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercises String           // JSON array of exercise IDs or structured data
+  sessions  WorkoutSession[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model WorkoutSession {
+  id          String         @id @default(cuid())
+  startTime   DateTime       @default(now())
+  endTime     DateTime?
+  duration    Int?           // in minutes
+  totalVolume Float?         @default(0)
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  routineId   String?
+  routine     WorkoutRoutine? @relation(fields: [routineId], references: [id])
+  sets        WorkoutSet[]
+  createdAt   DateTime       @default(now())
+}
+
+model WorkoutSet {
+  id               String         @id @default(cuid())
+  weight           Float
+  reps             Int
+  isCompleted      Boolean        @default(false)
+  order            Int
+  exerciseId       String
+  exercise         Exercise       @relation(fields: [exerciseId], references: [id])
+  workoutSessionId String
+  session          WorkoutSession @relation(fields: [workoutSessionId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+}
+
+model DailyScore {
+  id                String   @id @default(cuid())
+  date              DateTime
+  productivityScore Int
+  dietCompliance    Int
+  tasksPlanned      Int      @default(0)
+  tasksCompleted    Int      @default(0)
+  tasksSkipped      Int      @default(0)
+  totalXpEarned     Int      @default(0)
+  streakAtEnd       Int      @default(0)
+  levelAtEnd        Int      @default(1)
+  caloriesLogged    Int      @default(0)
+  proteinLogged     Int      @default(0)
+  carbsLogged       Int      @default(0)
+  fatsLogged        Int      @default(0)
+  aiFeedback        String?  // Narrative feedback text
+  aiStrengths       String?  // JSON array of strengths
+  aiWeaknesses      String?  // JSON array of weaknesses
+  aiSuggestions     String?  // JSON array of actionable suggestions
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+
+  @@unique([userId, date])
+}
+
+model WeeklyAnalysis {
+  id              String   @id @default(cuid())
+  weekStartDate   DateTime
+  weekEndDate     DateTime
+  avgScore        Int
+  totalXp         Int
+  streakDays      Int
+  bestDay         String?  // Date string of highest-scoring day
+  worstDay        String?  // Date string of lowest-scoring day
+  trend           String?  // "improving" | "declining" | "stable"
+  patterns        String?  // JSON array of detected patterns
+  recommendations String?  // JSON array of actionable suggestions
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, weekStartDate])
+}
