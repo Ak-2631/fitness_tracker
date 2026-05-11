@@ -4,13 +4,12 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Api } from "@/lib/api";
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return Api.unauthorized();
 
-    // Next.js 15 requires params to be awaited, we do it safely:
-    const { id } = await Promise.resolve(params);
+    const { id } = await params;
 
     const log = await prisma.dietLog.findUnique({
       where: { id }
