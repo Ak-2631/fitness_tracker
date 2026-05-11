@@ -14,8 +14,6 @@ async function main() {
       password: hashedPassword,
       targetCalories: 2500,
       targetProtein: 150,
-      targetCarbs: 300,
-      targetFats: 70,
     },
   });
   console.log('Seeded user:', user.email);
