@@ -57,6 +57,7 @@
 
 4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+
 ## 🧠 Design Philosophy
 
 The transition from the "Discipline Engine" to the **KINETIC Performance OS** emphasizes visual excellence and operational speed. The UI has undergone a complete overhaul to eliminate generic components, utilizing modern typography, dark modes, and subtle micro-animations to create an interface that feels responsive, alive, and professional-grade.

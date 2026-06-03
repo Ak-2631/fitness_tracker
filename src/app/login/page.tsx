@@ -41,16 +41,16 @@ export default function Login() {
   };
 
   return (
-    <div className="container animate-fade-in flex flex-col justify-center items-center min-h-[90vh] py-12">
+    <div className="w-full animate-fade-in flex flex-col justify-center items-center min-h-screen py-12 px-4">
       <GlassCard padding="lg" className="w-full max-w-[440px] relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-brand shadow-[0_0_15px_rgba(208,255,0,0.5)]" />
         
-        <div className="p-12 space-y-10">
+        <div className="p-12 space-y-6 text-center">
           <div className="w-20 h-20 bg-brand/10 rounded-none flex items-center justify-center mx-auto mb-6 border border-brand/20 group hover:scale-110 transition-transform duration-500">
             <LogIn size={40} className="text-brand" />
           </div>
-          <div className="text-[var(--font-label)] font-black text-white/30 mb-2 uppercase tracking-[0.3em]">Operational_Gate</div>
-          <h2 className="text-[var(--font-h2)] font-black">System Access</h2>
+          <div className="text-[10px] font-black text-white/40 mb-2 uppercase tracking-[0.3em]">OPERATIONAL GATE</div>
+          <h2 className="text-3xl font-black uppercase italic tracking-widest">SYSTEM ACCESS</h2>
         </div>
 
         {error && (
@@ -62,7 +62,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-[var(--space-6)]">
           <InputField 
-            label="CLASSIFICATION_ID (EMAIL)" 
+            label="CLASSIFICATION ID (EMAIL)" 
             type="email" 
             placeholder="authorized@system.core"
             value={email}
@@ -89,7 +89,7 @@ export default function Login() {
             disabled={loading}
             isLoading={loading}
           >
-            INITIALIZE_SESSION
+            INITIALIZE SESSION
             {!loading && <ChevronRight size={22} className="ml-1 group-hover:translate-x-1 transition-transform" />}
           </Button>
         </form>
@@ -102,8 +102,8 @@ export default function Login() {
         </div>
       </GlassCard>
       
-      <div className="mt-8 text-[10px] font-black text-white/10 uppercase tracking-[0.5em] pointer-events-none select-none">
-        ENCRYPTED_UPLINK_SECURE
+      <div className="mt-12 text-[10px] font-black text-white/40 uppercase tracking-[0.5em] pointer-events-none select-none">
+        ENCRYPTED UPLINK SECURE
       </div>
     </div>
   );

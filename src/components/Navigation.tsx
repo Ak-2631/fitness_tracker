@@ -10,7 +10,7 @@ import {
   Settings,
   Activity
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
@@ -75,13 +75,23 @@ export function Sidebar() {
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
-  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const isAuthPage = pathname === '/' || pathname === '/login' || pathname === '/signup';
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (status === 'unauthenticated' && !isAuthPage) {
+      router.push('/login');
+    }
+  }, [status, isAuthPage, router]);
 
-  if (status === 'loading' || !mounted) {
+  // On auth pages, just render children directly (no sidebar, no loading block)
+  if (isAuthPage) {
+    return <div className="min-h-screen bg-black">{children}</div>;
+  }
+
+  if (status === 'loading') {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <motion.div 
@@ -93,6 +103,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </motion.div>
       </div>
     );
+  }
+
+  if (!session) {
+    return null;
   }
 
   return (
