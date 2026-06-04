@@ -108,15 +108,15 @@ export default function Login() {
               disabled={loading}
               className="w-full bg-[#9b5de5] hover:bg-[#f3a6ff] text-[#0B0F19] font-black uppercase tracking-widest py-4 rounded-sm transition-all shadow-[0_0_15px_rgba(217,166,255,0.3)] hover:shadow-[0_0_25px_rgba(217,166,255,0.5)] transform hover:-translate-y-0.5 mt-4 flex items-center justify-center gap-2"
             >
-              {loading ? 'VERIFYING...' : 'INITIALIZE UPLINK'}
+              {loading ? 'VERIFYING...' : 'LOGIN'}
               {!loading && <ChevronRight size={20} />}
             </button>
           </form>
 
           <div className="text-center mt-10 pt-6 border-t border-[#1a1e2b]">
-            <span className="text-xs text-[#a0a5b5] uppercase tracking-wider">NO CLEARANCE? </span>
+            <span className="text-xs text-[#a0a5b5] uppercase tracking-wider">NO ACCOUNT? </span>
             <Link href="/signup" className="text-xs font-bold text-[#9b5de5] hover:text-white transition-colors uppercase tracking-widest ml-2 border-b border-[#9b5de5]/30 pb-0.5 hover:border-white">
-              REQUEST ACCESS
+              SIGN UP
             </Link>
           </div>
         </div>
