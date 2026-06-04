@@ -78,7 +78,7 @@ export default function Signup() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-[var(--space-6)]">
           <InputField 
-            label="DESIGNATION NAME" 
+            label="OPERATOR NAME" 
             type="text" 
             placeholder="Operator Full Name"
             value={name}
@@ -88,7 +88,7 @@ export default function Signup() {
           />
 
           <InputField 
-            label="CLASSIFICATION ID (EMAIL)" 
+            label="EMAIL ID" 
             type="email" 
             placeholder="operator@discipline.engine"
             value={email}
@@ -98,7 +98,7 @@ export default function Signup() {
           />
 
           <InputField 
-            label="SECURITY TOKEN (PASSWORD)" 
+            label="PASSWORD" 
             type="password" 
             placeholder="Minimum 6 characters"
             value={password}
@@ -116,15 +116,15 @@ export default function Signup() {
             disabled={loading}
             isLoading={loading}
           >
-            REGISTER PROTOCOL
+            REGISTER
             {!loading && <ChevronRight size={22} className="ml-1 group-hover:translate-x-1 transition-transform" />}
           </Button>
         </form>
 
         <div className="text-center mt-10 p-6 bg-white/[0.02] -mx-8 -mb-8 border-t border-white/5">
-          <span className="text-sm text-white/40">Operator active? </span>
+          <span className="text-sm text-white/40">Already have an account? </span>
           <Link href="/login" className="text-sm font-black text-brand hover:text-white transition-colors uppercase tracking-widest ml-1">
-            Authenticate Session
+            LOGIN
           </Link>
         </div>
       </GlassCard>

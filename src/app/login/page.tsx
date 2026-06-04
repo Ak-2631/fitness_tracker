@@ -68,7 +68,7 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-widest flex items-center gap-2">
-                <Mail size={14} /> CLASSIFICATION ID
+                <Mail size={14} /> EMAIL ID
               </label>
               <input 
                 type="email" 
@@ -82,7 +82,7 @@ export default function Login() {
 
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-widest flex items-center gap-2">
-                <Key size={14} /> SECURITY CLEARANCE
+                <Key size={14} /> PASSWORD
               </label>
               <div className="relative">
                 <input 
