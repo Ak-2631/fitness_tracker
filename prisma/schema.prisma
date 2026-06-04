@@ -16,6 +16,7 @@ model User {
   level           Int              @default(1)
   streak          Int              @default(0)
   targetCalories  Int              @default(2400)
+  baseExpenditure Int              @default(2400)
   targetProtein   Int              @default(150)
   targetCarbs     Int              @default(250)
   targetWater     Int              @default(2000)

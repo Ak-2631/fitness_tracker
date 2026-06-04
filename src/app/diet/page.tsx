@@ -116,8 +116,8 @@ export default function NutritionPage() {
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center p-32">
-       <Activity className="text-brand animate-spin mb-4" size={48} />
-       <p className="text-[10px] font-black text-brand tracking-[0.5em] uppercase italic">SYNCING_FUELING_TERMINAL...</p>
+       <Activity className="text-[#9b5de5] animate-spin mb-4" size={48} />
+       <p className="text-[12px] font-black text-[#9b5de5] tracking-[0.5em] uppercase">SYNCING FUELING TERMINAL...</p>
     </div>
   );
 
@@ -137,23 +137,20 @@ export default function NutritionPage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-24 bg-black min-h-screen">
+    <div className="max-w-[1400px] mx-auto space-y-6 animate-fade-in">
       
-      {/* 01. FUELING_HUD_HEADER */}
-      <section className="flex justify-between items-end">
+      {/* Top Banner Area */}
+      <section className="glass-card flex justify-between items-end">
         <div>
-          <div className="flex items-center gap-4 text-white/30 mb-8 font-black uppercase text-[10px] tracking-[0.3em] italic">
+          <div className="flex items-center gap-4 text-[10px] font-bold text-[#9b5de5] uppercase tracking-[0.3em] mb-2">
              <Box size={14} /> ASSETS // FUELING_TERMINAL_v0.3
           </div>
-          <h1 className="text-[80px] font-black tracking-tighter uppercase leading-[0.8] mb-6 italic">
+          <h1 className="text-5xl md:text-6xl font-black text-white uppercase tracking-tighter mb-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
             FUELING HUD
           </h1>
-          <div className="flex items-center gap-3 text-brand">
-            <Zap size={24} fill="#D0FF00" />
-            <p className="text-2xl font-black italic tracking-tighter uppercase">
-              {percentCal < 100 ? `COMMAND: CONSUME ${targets.cal - totals.calories} CAL REMAINING` : 'STATUS: CALORIC OPTIMA REACHED'}
-            </p>
-          </div>
+          <p className="text-[14px] font-bold text-[#a0a5b5] tracking-[0.2em] uppercase">
+            STATUS: <span className="text-[#9b5de5]">{percentCal < 100 ? `COMMAND: CONSUME ${targets.cal - totals.calories} CAL REMAINING` : 'CALORIC OPTIMA REACHED'}</span>
+          </p>
         </div>
         
         <AnimatePresence>
@@ -162,7 +159,7 @@ export default function NutritionPage() {
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 20, opacity: 0 }}
-              className="bg-brand text-black px-8 py-4 font-black italic tracking-widest text-sm uppercase flex items-center gap-3"
+              className="bg-[#9b5de5]/20 text-[#9b5de5] border border-[#9b5de5]/50 px-6 py-3 font-bold tracking-widest text-[10px] uppercase flex items-center gap-3 rounded-sm"
             >
               <CheckCircle2 size={16} /> {successMsg}
             </motion.div>
@@ -170,37 +167,37 @@ export default function NutritionPage() {
         </AnimatePresence>
       </section>
 
-      {/* 02. MACRO_LEDGER_PROGRESS */}
-      <section className="space-y-16">
-        <div className="space-y-6">
-          <div className="flex justify-between items-end">
-             <h2 className="text-5xl font-black tracking-tighter uppercase italic">CALORIES</h2>
-             <span className="text-3xl font-black text-white italic tracking-tighter">{totals.calories} / {targets.cal}</span>
+      {/* Macro Ledger Progress */}
+      <section className="glass-card space-y-10">
+        <div className="space-y-4">
+          <div className="flex justify-between items-end border-b border-[#1a1e2b] pb-4">
+             <h2 className="text-3xl font-black tracking-tighter uppercase text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>CALORIC INTAKE</h2>
+             <span className="text-2xl font-black text-[#9b5de5]">{totals.calories} <span className="text-sm text-[#a0a5b5]">/ {targets.cal}</span></span>
           </div>
-          <div className="h-20 bg-white/5 relative overflow-hidden">
+          <div className="h-12 bg-[#1a1e2b] relative overflow-hidden rounded-sm">
             <div 
-              className="h-full bg-brand transition-all duration-1000 flex items-center justify-center"
+              className="h-full bg-[#9b5de5] shadow-[0_0_15px_#9b5de5] transition-all duration-1000 flex items-center justify-end px-4"
               style={{ width: `${percentCal}%` }}
             >
-              <span className="text-[11px] font-black text-black uppercase tracking-[0.1em] italic">ENERGY_INTAKE_SYNCHRONIZED</span>
+              {percentCal > 15 && <span className="text-[10px] font-bold text-[#0e111a] uppercase tracking-widest">ENERGY SYNCHRONIZED</span>}
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-12">
+        <div className="grid grid-cols-3 gap-8">
            {[
-             { label: 'PROTEIN', val: totals.protein, target: targets.pro, color: 'brand' },
-             { label: 'CARBS', val: totals.carbs, target: targets.carb, color: 'white' },
-             { label: 'FATS', val: totals.fats, target: targets.fat, color: 'white/30' }
+             { label: 'PROTEIN', val: totals.protein, target: targets.pro, color: 'bg-[#9b5de5] shadow-[0_0_8px_#9b5de5]' },
+             { label: 'CARBS', val: totals.carbs, target: targets.carb, color: 'bg-white' },
+             { label: 'FATS', val: totals.fats, target: targets.fat, color: 'bg-white/40' }
            ].map(m => (
-             <div key={m.label} className="space-y-4">
-                <div className="flex justify-between text-[11px] font-black uppercase italic tracking-widest">
-                   <p className="text-white/40">{m.label}</p>
+             <div key={m.label} className="space-y-3">
+                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
+                   <p className="text-[#a0a5b5]">{m.label}</p>
                    <p className="text-white">{m.val}G / {m.target}G</p>
                 </div>
-                <div className="h-4 bg-white/5">
+                <div className="h-3 bg-[#1a1e2b] rounded-sm overflow-hidden">
                    <div 
-                     className={`h-full bg-${m.color} transition-all duration-1000`} 
+                     className={`h-full ${m.color} transition-all duration-1000`} 
                      style={{ width: `${Math.min(100, (m.val/m.target)*100)}%` }}
                    />
                 </div>
@@ -209,88 +206,94 @@ export default function NutritionPage() {
         </div>
       </section>
 
-      {/* 03. TACTICAL_INPUT_LANE */}
-      <div className="grid grid-cols-12 gap-12">
-        <div className="col-span-8 p-12 border border-white/5 bg-white/5 space-y-12">
-           <div className="flex items-center justify-between">
-              <h3 className="text-3xl font-black italic tracking-tighter uppercase text-white">SEARCH_PROTOCOLS</h3>
-              <Utensils className="text-white/10" size={32} />
+      {/* Tactical Input Lane */}
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-8 glass-card space-y-8">
+           <div className="flex items-center justify-between border-b border-[#1a1e2b] pb-4">
+              <h3 className="text-xl font-black tracking-tighter uppercase text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>SEARCH PROTOCOLS</h3>
+              <Utensils className="text-[#9b5de5]" size={24} />
            </div>
+           
            <FoodSearch onSelect={handleFuelingEntry} />
            
-           <div className="pt-8 border-t border-white/5">
-              <p className="text-[10px] font-black text-white/30 tracking-[0.4em] uppercase mb-8 italic">FREQ_PROTOCOLS (QUICK_SYNC)</p>
-              <div className="grid grid-cols-2 gap-6">
+           <div className="pt-8">
+              <p className="text-[10px] font-bold text-[#a0a5b5] tracking-[0.2em] uppercase mb-4">FREQ PROTOCOLS (QUICK SYNC)</p>
+              <div className="grid grid-cols-2 gap-4">
                  {frequentFoods.map(f => (
                    <button 
                      key={f.name}
                      onClick={() => handleFuelingEntry(f)}
-                     className="bg-white/[0.02] border border-white/10 p-6 text-left hover:border-brand hover:bg-white/[0.05] transition-all group"
+                     className="bg-[#111520] border border-[#1a1e2b] p-4 text-left hover:border-[#9b5de5] transition-all group rounded-sm"
                    >
-                     <p className="text-sm md:text-base font-black italic uppercase text-white group-hover:text-brand whitespace-nowrap overflow-hidden text-ellipsis">{f.name}</p>
-                     <p className="text-[10px] font-black text-white/20 uppercase tracking-widest mt-1 whitespace-nowrap overflow-hidden text-ellipsis">{f.calories} KCAL // {f.protein}P_{f.carbs}C_{f.fats}F</p>
+                     <p className="text-sm font-black uppercase text-white group-hover:text-[#9b5de5] whitespace-nowrap overflow-hidden text-ellipsis mb-1">{f.name}</p>
+                     <p className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-widest whitespace-nowrap overflow-hidden text-ellipsis">{f.calories} KCAL // {f.protein}P_{f.carbs}C_{f.fats}F</p>
                    </button>
                  ))}
               </div>
            </div>
         </div>
 
-        <div className="col-span-4 space-y-6">
+        <div className="col-span-4 flex flex-col gap-6">
            <button 
              onClick={repeatLastMeal}
              disabled={dietLogs.length === 0}
-             className="w-full bg-brand text-white p-10 font-black italic uppercase tracking-widest text-sm flex flex-col items-center justify-center gap-4 hover:scale-[1.02] transition-all"
+             className="w-full glass-card border-[#9b5de5]/30 text-[#9b5de5] py-8 font-black uppercase tracking-widest text-xs flex flex-col items-center justify-center gap-3 hover:bg-[#9b5de5]/10 hover:border-[#9b5de5] transition-all disabled:opacity-50 disabled:hover:bg-[#111520] disabled:cursor-not-allowed"
            >
-             <RefreshCw size={32} className="text-white" />
-             <span>REPEAT_LAST_ENTRY</span>
+             <RefreshCw size={24} className="text-[#9b5de5]" />
+             <span>REPEAT LAST ENTRY</span>
            </button>
            
-            <div className="bg-white/5 border border-white/5 p-8 space-y-4">
-              <div className="flex justify-between items-center">
-                 <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] italic">MACRO_DISTRIBUTION</p>
-                 <span className="text-[8px] text-brand tracking-widest font-black italic">ACTUAL</span>
+            <div className="glass-card flex-1 flex flex-col justify-between">
+              <div className="flex justify-between items-center mb-6 border-b border-[#1a1e2b] pb-4">
+                 <p className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-[0.2em]">MACRO DISTRIBUTION</p>
+                 <span className="text-[10px] font-bold text-[#9b5de5] tracking-widest uppercase">ACTUAL</span>
               </div>
-              <div className="flex gap-1 h-8 w-full">
-                 <div className="bg-brand transition-all duration-1000" style={{ flexGrow: Math.max(0.1, (totals.protein * 4)) }} />
+              
+              <div className="flex gap-1 h-12 w-full rounded-sm overflow-hidden mb-6">
+                 <div className="bg-[#9b5de5] transition-all duration-1000" style={{ flexGrow: Math.max(0.1, (totals.protein * 4)) }} />
                  <div className="bg-white transition-all duration-1000" style={{ flexGrow: Math.max(0.1, (totals.carbs * 4)) }} />
                  <div className="bg-white/20 transition-all duration-1000" style={{ flexGrow: Math.max(0.1, (totals.fats * 9)) }} />
               </div>
-              <div className="flex justify-between text-[9px] font-black uppercase italic tracking-widest">
-                 <span className="text-brand">PRO: {totals.calories > 0 ? Math.round(((totals.protein * 4) / totals.calories) * 100) : 0}%</span>
+              
+              <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
+                 <span className="text-[#9b5de5]">PRO: {totals.calories > 0 ? Math.round(((totals.protein * 4) / totals.calories) * 100) : 0}%</span>
                  <span className="text-white">CARB: {totals.calories > 0 ? Math.round(((totals.carbs * 4) / totals.calories) * 100) : 0}%</span>
-                 <span className="text-white/40">FAT: {totals.calories > 0 ? Math.round(((totals.fats * 9) / totals.calories) * 100) : 0}%</span>
+                 <span className="text-[#a0a5b5]">FAT: {totals.calories > 0 ? Math.round(((totals.fats * 9) / totals.calories) * 100) : 0}%</span>
               </div>
            </div>
         </div>
       </div>
 
-      {/* 04. CONSUMPTION_HISTORY */}
-      <section className="space-y-8">
-        <h3 className="text-[11px] font-black text-white/30 uppercase tracking-[0.4em] italic pb-4 border-b border-white/5">HISTORICAL_TELEMETRY</h3>
-        <div className="space-y-px">
+      {/* Consumption History */}
+      <section className="glass-card">
+        <h3 className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-[0.2em] pb-4 border-b border-[#1a1e2b] mb-4">HISTORICAL TELEMETRY</h3>
+        <div className="space-y-2">
           {(dietLogs || []).map((log, i) => (
-            <div key={log.id} className="flex justify-between items-center py-6 hover:bg-white/5 px-4 transition-all group">
-               <div className="flex gap-8 items-center">
-                  <p className="text-[10px] font-black text-white/20 uppercase tabular-nums">0{i+1}</p>
+            <div key={log.id} className="flex justify-between items-center p-4 bg-[#111520] hover:bg-[#1a1e2b]/50 border border-[#1a1e2b] rounded-sm transition-all group">
+               <div className="flex gap-6 items-center">
+                  <p className="text-[10px] font-bold text-[#a0a5b5] uppercase tabular-nums">{(i+1).toString().padStart(2, '0')}</p>
                   <div>
-                    <p className="text-xl font-black uppercase text-white leading-tight">{log.foodName}</p>
-                    <p className="text-[10px] font-black text-white/20 uppercase tracking-widest mt-1">TIME_STAMP // {new Date(log.createdAt).toLocaleTimeString()}</p>
+                    <p className="text-base font-black uppercase text-white leading-tight mb-1">{log.foodName}</p>
+                    <p className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-widest">TIME_STAMP // {new Date(log.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
                   </div>
                </div>
-               <div className="flex gap-12 items-center">
+               <div className="flex gap-8 items-center">
                   <div className="text-right">
-                     <p className="text-2xl font-black italic text-brand leading-tight">{log.calories}_KCAL</p>
-                     <p className="text-[10px] font-black text-white/20 uppercase tracking-widest mt-1">{log.protein}P / {log.carbs}C / {log.fats}F</p>
+                     <p className="text-xl font-black text-[#9b5de5] leading-tight" style={{ fontFamily: 'Orbitron, sans-serif' }}>{log.calories} KCAL</p>
+                     <p className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-widest mt-1">{log.protein}P / {log.carbs}C / {log.fats}F</p>
                   </div>
                   <button 
                     onClick={() => handleDeleteEntry(log.id)}
-                    className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-400 transition-all font-black uppercase text-[10px] tracking-widest"
+                    className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-400 transition-all font-bold uppercase text-[10px] tracking-widest w-16 text-right"
                   >
                     DELETE
                   </button>
                </div>
             </div>
           ))}
+          {dietLogs.length === 0 && (
+            <div className="py-12 text-center text-[#a0a5b5] text-sm">No telemetry logs found for current cycle.</div>
+          )}
         </div>
       </section>
 

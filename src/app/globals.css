@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand: #A855F7;
-  --color-background: #000000;
-  --color-panel: #0a0a0a;
-  --color-border: #1a1a1a;
+  --color-brand: #9b5de5;
+  --color-brand-glow: #f3a6ff;
+  --color-background: #0e111a;
+  --color-panel: #111520;
+  --color-border: #1a1e2b;
+  --color-success: #3be282;
   
   /* Strict 12-Column Grid Gap */
   --spacing-grid-gap: 24px;
@@ -17,50 +19,50 @@
   --spacing-major: 64px;
 
   /* Typography Dominance */
-  --font-size-h1: 82px;
-  --font-size-h2: 32px;
-  --font-size-h3: 10px;
-  --font-size-metric: 96px;
+  --font-size-h1: 64px;
+  --font-size-h2: 24px;
+  --font-size-h3: 12px;
+  --font-size-metric: 72px;
 
   --animate-glow: glow 2s ease-in-out infinite;
   --animate-pulse-glow: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes glow {
-  0%, 100% { filter: drop-shadow(0 0 5px #A855F7); }
-  50% { filter: drop-shadow(0 0 15px #A855F7); }
+  0%, 100% { filter: drop-shadow(0 0 5px var(--color-brand)); }
+  50% { filter: drop-shadow(0 0 15px var(--color-brand-glow)); }
 }
 
 @keyframes pulse {
-  0%, 100% { border-color: rgba(168, 85, 247, 0.8); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
-  50% { border-color: rgba(168, 85, 247, 0.2); box-shadow: 0 0 5px rgba(168, 85, 247, 0.1); }
+  0%, 100% { border-color: rgba(217, 166, 255, 0.8); box-shadow: 0 0 15px rgba(217, 166, 255, 0.3); }
+  50% { border-color: rgba(217, 166, 255, 0.2); box-shadow: 0 0 5px rgba(217, 166, 255, 0.1); }
 }
 
 @layer base {
   body {
-    @apply bg-black text-white antialiased selection:bg-brand selection:text-black font-sans;
+    @apply bg-[#0e111a] text-[#a0a5b5] antialiased selection:bg-brand selection:text-black font-sans;
+    /* Adding a subtle grid background for tactical feel */
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
 
   h1 {
-    @apply text-[82px] font-black tracking-tighter uppercase italic leading-[0.8] mb-10;
+    @apply text-[64px] font-black tracking-tighter uppercase mb-6 text-white;
   }
 
   h2 {
-    @apply text-3xl font-black uppercase italic tracking-tighter mb-6 relative inline-block;
-  }
-
-  .section-glow::after {
-    content: '';
-    @apply absolute -bottom-1 left-0 w-full h-0.5 bg-brand shadow-[0_0_10px_#A855F7];
+    @apply text-2xl font-black uppercase tracking-widest mb-4 relative inline-block text-white;
   }
 
   h3 {
-    @apply text-[10px] font-black text-white/30 tracking-[0.4em] uppercase mb-4;
+    @apply text-[12px] font-bold text-white/50 tracking-[0.2em] uppercase mb-2;
   }
 
   /* Global Page Padding */
   .page-container {
-    @apply px-16 py-10 min-h-screen;
+    @apply px-10 py-8 min-h-screen;
   }
 
   /* 12-Column Foundation */
@@ -69,46 +71,51 @@
   }
 
   .main-panel {
-    @apply col-span-12 lg:col-span-8 space-y-16;
+    @apply col-span-12 lg:col-span-8 space-y-6;
   }
 
   .side-panel {
-    @apply col-span-12 lg:col-span-4 space-y-10;
+    @apply col-span-12 lg:col-span-4 space-y-6;
   }
 
   /* Standard Performance Block */
   .performance-block {
-    @apply border border-white/5 bg-white/[0.02] p-5 lg:p-6 transition-all;
+    @apply border border-[#1a1e2b] bg-[#111520] p-5 lg:p-6 transition-all rounded-sm;
   }
 
   /* Interaction Primitives */
   .btn-primary {
-    @apply bg-brand text-black font-black italic px-8 py-4 uppercase tracking-widest hover:scale-105 active:scale-95 transition-all;
+    @apply bg-[#9b5de5] text-[#0e111a] font-black px-6 py-3 uppercase tracking-widest hover:bg-[#f3a6ff] transition-all rounded-sm shadow-[0_0_15px_rgba(217,166,255,0.4)];
   }
 
   .btn-outline {
-    @apply border border-white/10 text-white/60 font-black px-8 py-4 uppercase tracking-widest hover:border-brand hover:text-brand transition-all;
+    @apply border border-white/20 text-white/80 font-bold px-6 py-3 uppercase tracking-widest hover:border-[#9b5de5] hover:text-[#9b5de5] transition-all rounded-sm;
   }
 
   .glass-card {
-    @apply bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-none p-8;
+    @apply bg-[#111520]/80 backdrop-blur-md border border-[#1a1e2b] p-6 rounded-sm;
   }
 
   .hud-pulse {
-    @apply border-2 border-brand/60 rounded-[40px] animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+    @apply border-2 border-[#9b5de5]/60 rounded-sm animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+
+  .tactical-font {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   }
 }
 
-/* Custom Scrollbar for Industrial Feel */
+/* Custom Scrollbar for Tactical Feel */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: black;
+  background: #0e111a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1a1a1a;
+  background: #1a1e2b;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #A855F7;
+  background: #9b5de5;
 }

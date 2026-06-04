@@ -4,11 +4,16 @@ import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { 
   LayoutDashboard, 
-  BarChart3, 
-  Share2, 
+  Activity, 
   Box, 
   Settings,
-  Activity
+  Bell,
+  Trophy,
+  User,
+  LogOut,
+  HelpCircle,
+  Crosshair,
+  Radar
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -26,50 +31,115 @@ export function Sidebar() {
   if (!session || !mounted) return null;
 
   const navItems = [
-    { label: 'OVERVIEW', href: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { label: 'ANALYTICS', href: '/monitoring', icon: <BarChart3 size={20} /> },
-    { label: 'TRAINING', href: '/workouts', icon: <Activity size={20} /> },
-    { label: 'DIET', href: '/diet', icon: <Box size={20} /> },
-    { label: 'SETTINGS', href: '/settings', icon: <Settings size={20} /> },
+    { label: 'Overview', href: '/dashboard', icon: <LayoutDashboard size={20} /> },
+    { label: 'Training', href: '/workouts', icon: <Activity size={20} /> },
+    { label: 'Nutrition', href: '/diet', icon: <Box size={20} /> },
+    { label: 'Intel', href: '/monitoring', icon: <Radar size={20} /> },
   ];
 
   return (
-    <aside className="fixed top-0 left-0 bottom-0 w-64 bg-black border-r border-white/5 z-50 flex flex-col p-8">
+    <aside className="fixed top-0 left-0 bottom-0 w-[280px] bg-[#0B0F19] border-r border-[#1a1e2b] z-50 flex flex-col pt-6 pb-6 shadow-[4px_0_24px_rgba(0,0,0,0.5)]">
       {/* Sector Identity */}
-      <div className="mb-16">
-        <p className="text-[10px] font-black text-brand tracking-[0.2em] mb-1">COMMAND</p>
-        <p className="text-[10px] font-black text-white/30 tracking-[0.2em] uppercase">SECTOR-01</p>
+      <div className="px-8 mb-8">
+        <h1 className="text-3xl font-black text-[#9b5de5] tracking-tighter uppercase mb-8 drop-shadow-[0_0_10px_rgba(217,166,255,0.4)]" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+          APEX TACTICAL
+        </h1>
+        <div className="mb-2">
+          <p className="text-[14px] font-bold text-white tracking-widest uppercase">COMMAND</p>
+          <p className="text-[14px] font-bold text-white tracking-widest uppercase mb-1">CENTER</p>
+          <p className="text-[10px] font-bold text-[#a0a5b5] tracking-[0.2em] uppercase">LEVEL {session?.user?.level || 42} OPERATOR</p>
+        </div>
       </div>
 
       {/* Navigation Protocols */}
-      <nav className="flex-1 space-y-4">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link 
-              key={item.label}
-              href={item.href}
-              className={`flex items-center gap-4 py-4 px-2 transition-all ${isActive ? 'bg-white/5 border-l-4 border-l-brand text-white' : 'text-white/40 hover:text-white'}`}
-            >
-              <div className={isActive ? 'text-brand' : ''}>
-                {item.icon}
-              </div>
-              <span className="text-[11px] font-black tracking-[0.2em] uppercase">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
+      <nav className="flex-1">
+        <div className="px-4 space-y-2 mb-8">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link 
+                key={item.label}
+                href={item.href}
+                className={`flex items-center gap-4 py-3 px-4 transition-all rounded-sm ${isActive ? 'bg-[#111520] border-l-4 border-l-[#9b5de5] text-white shadow-[inset_0_0_20px_rgba(217,166,255,0.05)]' : 'text-[#a0a5b5] hover:text-white hover:bg-[#111520]/50'}`}
+              >
+                <div className={isActive ? 'text-[#9b5de5]' : ''}>
+                  {item.icon}
+                </div>
+                <span className="text-[12px] font-bold tracking-[0.1em] uppercase">
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+        
       </nav>
 
-      {/* System Exit */}
-      <button 
-        onClick={() => signOut({ callbackUrl: '/' })}
-        className="text-[10px] font-black text-white/20 hover:text-brand tracking-[0.3em] uppercase text-left pt-8 border-t border-white/5"
-      >
-        TERMINATE_LINK
-      </button>
+      {/* Footer Nav */}
+      <div className="px-4 space-y-2">
+        <Link href="/settings" className="flex items-center gap-4 py-3 px-4 text-[#a0a5b5] hover:text-white transition-all rounded-sm hover:bg-[#111520]/50">
+          <Settings size={20} />
+          <span className="text-[12px] font-bold tracking-[0.1em] uppercase">Settings</span>
+        </Link>
+        <button className="w-full flex items-center gap-4 py-3 px-4 text-[#a0a5b5] hover:text-white transition-all rounded-sm hover:bg-[#111520]/50">
+          <HelpCircle size={20} />
+          <span className="text-[12px] font-bold tracking-[0.1em] uppercase">Support</span>
+        </button>
+        <button 
+          onClick={() => signOut({ callbackUrl: '/' })}
+          className="w-full flex items-center gap-4 py-3 px-4 text-red-400 hover:text-red-300 transition-all rounded-sm hover:bg-red-400/10 mt-4 border-t border-[#1a1e2b] pt-4"
+        >
+          <LogOut size={20} />
+          <span className="text-[12px] font-bold tracking-[0.1em] uppercase">Sign Out</span>
+        </button>
+      </div>
     </aside>
+  );
+}
+
+export function Topbar() {
+  const { data: session } = useSession();
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!session || !mounted) return null;
+
+  return (
+    <header className="fixed top-0 left-[280px] right-0 h-20 bg-[#0B0F19]/90 backdrop-blur-md border-b border-[#1a1e2b] z-40 flex items-center justify-between px-10">
+      
+      {/* Center Nav */}
+      <nav className="flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
+        <Link href="/dashboard" className={`text-[11px] font-black tracking-[0.2em] uppercase transition-all ${pathname === '/dashboard' ? 'text-[#9b5de5]' : 'text-[#a0a5b5] hover:text-white'}`}>
+          DASHBOARD
+        </Link>
+        <Link href="/operations" className={`text-[11px] font-black tracking-[0.2em] uppercase transition-all ${pathname === '/operations' ? 'text-[#9b5de5]' : 'text-[#a0a5b5] hover:text-white'}`}>
+          OPERATIONS
+        </Link>
+        <Link href="/workouts" className={`text-[11px] font-black tracking-[0.2em] uppercase transition-all ${pathname === '/workouts' ? 'text-[#9b5de5]' : 'text-[#a0a5b5] hover:text-white'}`}>
+          ARMORY
+        </Link>
+      </nav>
+
+      <div className="flex-1" />
+
+      {/* Right Icons */}
+      <div className="flex items-center gap-6">
+        <button className="text-[#a0a5b5] hover:text-white transition-colors relative">
+          <Bell size={20} />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#9b5de5] rounded-full animate-pulse"></span>
+        </button>
+        <button className="text-[#a0a5b5] hover:text-white transition-colors">
+          <Trophy size={20} />
+        </button>
+        <div className="w-8 h-8 rounded-full bg-[#111520] border border-[#1a1e2b] flex items-center justify-center overflow-hidden ml-2 cursor-pointer hover:border-[#9b5de5] transition-all">
+          <User size={16} className="text-[#a0a5b5]" />
+        </div>
+      </div>
+    </header>
   );
 }
 
@@ -88,18 +158,18 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   // On auth pages, just render children directly (no sidebar, no loading block)
   if (isAuthPage) {
-    return <div className="min-h-screen bg-black">{children}</div>;
+    return <div className="min-h-screen bg-[#0B0F19]">{children}</div>;
   }
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center">
         <motion.div 
           animate={{ opacity: [0.3, 1, 0.3] }}
           transition={{ duration: 1.5, repeat: Infinity }}
-          className="text-[10px] font-black text-brand tracking-[0.5em] uppercase"
+          className="text-[12px] font-black text-[#9b5de5] tracking-[0.5em] uppercase"
         >
-          INITIATING_SECTOR_01_LINK...
+          CONNECTING TO SECURE SERVER...
         </motion.div>
       </div>
     );
@@ -110,10 +180,23 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-black flex">
+    <div className="min-h-screen bg-[#0e111a] flex">
       <Sidebar />
-      <main className="flex-1 ml-64 p-16">
+      <Topbar />
+      <main className="flex-1 ml-[280px] mt-20 p-10 relative">
         {children}
+        
+        {/* Floating Add Task Button */}
+        {pathname !== '/operations' && (
+          <div className="fixed bottom-10 right-10 z-50">
+            <Link 
+              href="/operations"
+              className="flex items-center justify-center w-16 h-16 bg-[#9b5de5] hover:bg-[#f3a6ff] rounded-full shadow-[0_0_20px_rgba(217,166,255,0.4)] hover:shadow-[0_0_30px_rgba(217,166,255,0.6)] text-[#0B0F19] transition-all transform hover:scale-110"
+            >
+              <span className="text-3xl font-light mb-1">+</span>
+            </Link>
+          </div>
+        )}
       </main>
     </div>
   );

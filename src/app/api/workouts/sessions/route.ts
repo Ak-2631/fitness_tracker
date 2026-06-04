@@ -52,7 +52,6 @@ export async function POST(req: Request) {
         }
       });
 
-      // Create sets
       const setPromises = sets.map((set: any, index: number) => {
         return tx.workoutSet.create({
           data: {
@@ -67,6 +66,21 @@ export async function POST(req: Request) {
       });
 
       await Promise.all(setPromises);
+
+      // Create a completed task for tracking
+      await tx.task.create({
+        data: {
+          title: `Gym Session: ${totalVolume} KG Volume`,
+          priority: 8,
+          isCompleted: true,
+          completedAt: new Date(),
+          datePlannedFor: new Date(),
+          energyLevel: 4,
+          estimatedTime: duration || 60,
+          userId: session.user.id
+        }
+      });
+
       return newSession;
     });
 
@@ -76,3 +90,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
+

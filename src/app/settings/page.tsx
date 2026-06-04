@@ -26,6 +26,7 @@ export default function SettingsPage() {
   const [savedStatus, setSavedStatus] = useState(false);
 
   const [formData, setFormData] = useState({
+    baseExpenditure: '',
     targetCalories: '',
     targetProtein: '',
     targetCarbs: '',
@@ -40,6 +41,7 @@ export default function SettingsPage() {
         .then(data => {
           setProfile(data.user);
           setFormData({
+            baseExpenditure: data.user.baseExpenditure?.toString() || '2400',
             targetCalories: data.user.targetCalories?.toString() || '2500',
             targetProtein: data.user.targetProtein?.toString() || '150',
             targetCarbs: data.user.targetCarbs?.toString() || '300',
@@ -74,72 +76,73 @@ export default function SettingsPage() {
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center p-32">
-       <Activity className="text-brand animate-spin mb-4" size={48} />
-       <p className="text-[10px] font-black text-brand tracking-[0.5em] uppercase italic">RECALIBRATING_SYSTEM_KERNEL...</p>
+       <Activity className="text-[#9b5de5] animate-spin mb-4" size={48} />
+       <p className="text-[12px] font-black text-[#9b5de5] tracking-[0.5em] uppercase">RECALIBRATING SYSTEM KERNEL...</p>
     </div>
   );
 
   return (
-    <div className="max-w-6xl mx-auto space-y-24 bg-black min-h-screen">
+    <div className="max-w-[1400px] mx-auto space-y-6 animate-fade-in pb-32">
       
-      {/* 01. SETTINGS_HUD_HEADER */}
-      <section className="flex justify-between items-end border-b border-white/5 pb-16">
+      {/* Top Banner Area */}
+      <section className="glass-card flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-4 text-white/30 mb-8 font-black uppercase text-[10px] tracking-[0.3em] italic">
-             <Settings size={14} /> SYSTEM_KERNEL // CALIBRATION_v0.2
+          <div className="flex items-center gap-4 text-[10px] font-bold text-[#9b5de5] uppercase tracking-[0.3em] mb-2">
+             <Settings size={14} /> SYSTEM KERNEL // CALIBRATION_v0.2
           </div>
-          <h1 className="text-[80px] font-black tracking-tighter uppercase leading-[0.8] mb-2 italic">
+          <h1 className="text-5xl md:text-6xl font-black text-white uppercase tracking-tighter mb-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
             SETTINGS
           </h1>
         </div>
         <button 
           onClick={handleSave}
           disabled={isSaving}
-          className="bg-brand text-black px-16 py-8 font-black italic tracking-widest text-2xl uppercase hover:scale-[1.02] transition-all"
+          className={`btn-primary flex items-center gap-2 ${savedStatus ? 'bg-[#3be282] text-black border-[#3be282]' : ''}`}
         >
-          {isSaving ? 'OPTIMIZING...' : savedStatus ? 'CONFIG_LOCKED' : 'COMMIT_CONFIG'}
+          {isSaving ? (
+            <><RefreshCw size={18} className="animate-spin" /> SAVING...</>
+          ) : savedStatus ? (
+            <><CheckCircle2 size={18} /> CHANGES SAVED</>
+          ) : (
+            <><Save size={18} /> SAVE CHANGES</>
+          )}
         </button>
       </section>
 
-      <div className="grid grid-cols-12 gap-16">
+      <div className="grid grid-cols-12 gap-6">
         
         {/* LEF_COL: CALIBRATION_PARAMETERS */}
-        <div className="col-span-8 space-y-20">
+        <div className="col-span-8 space-y-6">
           
-          <section className="space-y-12">
-            <h3 className="text-[11px] font-black text-white/30 uppercase tracking-[0.4em] italic pb-4 border-b border-white/5">IDENT_PROTOCOL</h3>
-            <div className="grid grid-cols-2 gap-12">
+          <section className="glass-card space-y-6">
+            <h3 className="text-2xl font-black tracking-tighter uppercase text-white pb-4 border-b border-[#1a1e2b]" style={{ fontFamily: 'Orbitron, sans-serif' }}>IDENT PROTOCOL</h3>
+            <div className="grid grid-cols-1 gap-6 max-w-md">
               <div className="space-y-4">
-                <label className="text-[10px] font-black text-white/20 uppercase tracking-widest italic font-sans">OPERATOR_ALIAS</label>
+                <label className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-widest">OPERATOR NAME</label>
                 <input 
-                  className="w-full bg-white/5 border border-white/10 p-6 text-2xl font-black italic text-white outline-none focus:border-brand transition-all"
+                  className="w-full bg-[#0e111a] border border-[#1a1e2b] p-4 text-xl font-bold text-white outline-none focus:border-[#9b5de5] transition-all"
                   value={formData.name}
                   onChange={e => setFormData({...formData, name: e.target.value})}
                 />
               </div>
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-white/20 uppercase tracking-widest italic font-sans">ACCESS_LEVEL</label>
-                <div className="w-full bg-black border border-white/10 p-6 text-2xl font-black italic text-white/20 cursor-not-allowed">
-                  SUPERUSER_01
-                </div>
-              </div>
             </div>
           </section>
 
-          <section className="space-y-12">
-            <h3 className="text-[11px] font-black text-white/30 uppercase tracking-[0.4em] italic pb-4 border-b border-white/5">FUELING_CALIBRATION</h3>
-            <div className="grid grid-cols-2 gap-12">
+          <section className="glass-card space-y-6">
+            <h3 className="text-2xl font-black tracking-tighter uppercase text-white pb-4 border-b border-[#1a1e2b]" style={{ fontFamily: 'Orbitron, sans-serif' }}>CALORIE DETAILS</h3>
+            <div className="grid grid-cols-2 gap-6">
               {[
-                { label: 'CALORIE_TARGET_KCAL', key: 'targetCalories' },
-                { label: 'PROTEIN_TARGET_G', key: 'targetProtein' },
-                { label: 'CARB_TARGET_G', key: 'targetCarbs' },
-                { label: 'WATER_TARGET_ML', key: 'targetWater' }
+                { label: 'BASE EXPENDITURE (KCAL)', key: 'baseExpenditure' },
+                { label: 'CALORIE TARGET (KCAL)', key: 'targetCalories' },
+                { label: 'PROTEIN TARGET (G)', key: 'targetProtein' },
+                { label: 'CARB TARGET (G)', key: 'targetCarbs' },
+                { label: 'WATER TARGET (ML)', key: 'targetWater' }
               ].map(field => (
                 <div key={field.label} className="space-y-4">
-                  <label className="text-[10px] font-black text-white/20 uppercase tracking-widest italic font-sans">{field.label}</label>
+                  <label className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-widest">{field.label}</label>
                   <input 
                     type="number"
-                    className="w-full bg-white/5 border border-white/10 p-6 text-4xl font-black italic text-brand outline-none focus:border-brand transition-all"
+                    className="w-full bg-[#0e111a] border border-[#1a1e2b] p-4 text-3xl font-black text-[#9b5de5] outline-none focus:border-[#9b5de5] transition-all"
                     value={(formData as any)[field.key]}
                     onChange={e => setFormData({...formData, [field.key]: e.target.value})}
                   />
@@ -148,15 +151,15 @@ export default function SettingsPage() {
             </div>
           </section>
 
-          <section className="bg-brand/5 border border-brand/20 p-10 space-y-6">
-             <div className="flex items-start gap-8">
-                <div className="w-16 h-16 bg-brand flex items-center justify-center text-black">
-                   <Shield size={32} />
+          <section className="glass-card border-l-4 border-l-[#3be282] space-y-4 bg-[#3be282]/5">
+             <div className="flex items-start gap-6">
+                <div className="w-12 h-12 bg-[#3be282]/20 flex items-center justify-center text-[#3be282] rounded-full shrink-0">
+                   <Shield size={24} />
                 </div>
                 <div>
-                   <h4 className="text-2xl font-black uppercase italic mb-2">NEURAL_PRIVACY_ACTIVE</h4>
-                   <p className="text-[11px] font-black text-white/40 uppercase tracking-tighter leading-loose">
-                     ALL PERFORMANCE TELEMETRY IS SECURED UNDER AES-256 ENCRYPTION // NO DATA DEVIATION PERMITTED // SECTOR-01 ENHANCED
+                   <h4 className="text-lg font-black uppercase text-white tracking-widest mb-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>NEURAL PRIVACY ACTIVE</h4>
+                   <p className="text-[11px] font-bold text-[#a0a5b5] uppercase tracking-wider leading-relaxed">
+                     ALL PERFORMANCE TELEMETRY IS SECURED UNDER AES-256 ENCRYPTION. NO DATA DEVIATION PERMITTED. SECTOR-01 ENHANCED.
                    </p>
                 </div>
              </div>
@@ -164,46 +167,26 @@ export default function SettingsPage() {
         </div>
 
         {/* RIGHT_COL: KERNEL_DIAGNOSTICS */}
-        <div className="col-span-4 space-y-12">
-           <section className="border border-white/5 bg-white/5 p-10 space-y-10">
-              <h3 className="text-[11px] font-black text-white/30 uppercase tracking-[0.4em] italic mb-6">SYSTEM_DAEMONS</h3>
-              <div className="space-y-8">
-                 {[
-                   { label: 'STITCH_SYNC_ENGINE', status: 'ACTIVE', color: 'text-brand' },
-                   { label: 'WKT_OS_KERNEL', status: 'STANDBY', color: 'text-white/20' },
-                   { label: 'BIO_FEEDBACK_MATRIX', status: 'ENCRYPTED', color: 'text-brand' },
-                   { label: 'XP_LEDGER_SYNC', status: 'SYNCHRONIZED', color: 'text-brand' }
-                 ].map(daemon => (
-                   <div key={daemon.label} className="flex justify-between items-center gap-4 border-b border-white/5 pb-4 last:border-0 last:pb-0">
-                      <p className="text-[10px] font-black text-white/40 tracking-wider uppercase truncate">{daemon.label}</p>
-                      <div className="flex items-center gap-2 whitespace-nowrap">
-                        <div className={`w-1.5 h-1.5 ${daemon.color === 'text-brand' ? 'bg-brand animate-pulse' : 'bg-white/10'}`} />
-                        <span className={`text-[10px] font-black uppercase italic ${daemon.color}`}>{daemon.status}</span>
-                      </div>
-                   </div>
-                 ))}
-              </div>
-           </section>
-
-           <div className="border border-white/5 p-10 bg-black relative overflow-hidden group hover:bg-white/[0.02] transition-all">
-              <div className="absolute -right-8 -bottom-8 opacity-[0.02] group-hover:opacity-[0.05] transition-all">
+        <div className="col-span-4 space-y-6">
+           <div className="glass-card border-red-500/20 relative overflow-hidden group hover:border-red-500/50 transition-all flex flex-col justify-between h-[200px]">
+              <div className="absolute -right-8 -bottom-8 opacity-5 group-hover:opacity-10 transition-all text-red-500">
                  <RefreshCw size={160} className="animate-spin-slow" />
               </div>
-              <h4 className="text-[10px] font-black text-white/20 tracking-[0.3em] uppercase mb-4 italic">LAST_MAINTENANCE</h4>
-              <p className="text-xl lg:text-2xl font-black italic mb-8 break-words leading-tight">APR_25_2026 // 20:07_IST</p>
+              <div>
+                <h4 className="text-[10px] font-bold text-[#a0a5b5] tracking-[0.2em] uppercase mb-2">LAST MAINTENANCE</h4>
+                <p className="text-xl font-black text-white break-words" style={{ fontFamily: 'Orbitron, sans-serif' }}>APR_25_2026</p>
+                <p className="text-xs text-[#a0a5b5] mt-1 font-mono">20:07_IST</p>
+              </div>
               <button 
-                className="w-full border border-white/10 text-white/20 p-4 text-[10px] font-black tracking-widest uppercase hover:border-red-500 hover:text-red-500 transition-all font-sans break-words"
+                className="w-full border border-[#1a1e2b] text-[#a0a5b5] p-3 text-[10px] font-bold tracking-[0.2em] uppercase hover:border-red-500 hover:text-red-500 hover:bg-red-500/10 transition-all font-sans break-words z-10 relative"
               >
-                FORCE_SYSTEM_RESET
+                FORCE SYSTEM RESET
               </button>
            </div>
         </div>
 
       </div>
 
-      <footer className="pt-24 opacity-10 pb-16">
-         <p className="text-[10px] font-black tracking-[1em] uppercase text-center">KINETIC // KERNEL_STABLE_v0.2</p>
-      </footer>
     </div>
   );
 }

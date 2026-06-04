@@ -5,20 +5,14 @@ import { useSession } from 'next-auth/react';
 import { 
   Plus, 
   Trash2, 
-  Play, 
   Square, 
-  PlusCircle, 
-  CheckCircle2, 
   Activity, 
   Zap, 
   Database,
-  ChevronRight,
   Target,
   Clock,
-  LayoutDashboard
+  CheckCircle2
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Analytics } from '@/lib/analytics';
 
 interface SetRecord {
   weight: number;
@@ -37,6 +31,7 @@ export default function ActiveWorkoutPage() {
   const [availableExercises, setAvailableExercises] = useState<any[]>([]);
   const [selectedExerciseId, setSelectedExerciseId] = useState('');
   const [isTerminating, setIsTerminating] = useState(false);
+  const [terminationSuccess, setTerminationSuccess] = useState(false);
   const [startTime] = useState(new Date());
   const [elapsedTime, setElapsedTime] = useState('00:00');
 
@@ -57,9 +52,6 @@ export default function ActiveWorkoutPage() {
         .then(data => {
           if (data && Array.isArray(data.exercises)) {
             setAvailableExercises(data.exercises);
-          } else {
-            console.error("EXPECTED_ARRAY_GOT:", data);
-            setAvailableExercises([]);
           }
         })
         .catch(console.error);
@@ -106,7 +98,7 @@ export default function ActiveWorkoutPage() {
     setIsTerminating(true);
     
     const flatSets: any[] = [];
-    let totalVolume = 0;
+    let totalVolumeCalc = 0;
     
     exercises.forEach(ex => {
       ex.sets.forEach(s => {
@@ -116,13 +108,13 @@ export default function ActiveWorkoutPage() {
             weight: Number(s.weight),
             reps: Number(s.reps)
           });
-          totalVolume += Number(s.weight) * Number(s.reps);
+          totalVolumeCalc += Number(s.weight) * Number(s.reps);
         }
       });
     });
 
     if (flatSets.length === 0) {
-      alert("No valid sets completed. Cannot save empty session.");
+      alert("NO COMBAT DATA. ABORTING TERMINATION.");
       setIsTerminating(false);
       return;
     }
@@ -135,102 +127,118 @@ export default function ActiveWorkoutPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sets: flatSets,
-          totalVolume,
+          totalVolume: totalVolumeCalc,
           duration,
           startTime: startTime.toISOString(),
           endTime: new Date().toISOString()
         })
       });
       if (response.ok) {
-        window.location.href = '/dashboard';
+        setTerminationSuccess(true);
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1500);
+      } else {
+         setIsTerminating(false);
+         alert("ERROR LOGGING SESSION");
       }
     } catch (e) {
       console.error("TERMINATION_FAILURE:", e);
-    } finally {
       setIsTerminating(false);
     }
   };
 
-  return (
-    <div className="max-w-6xl mx-auto space-y-24 bg-black min-h-screen">
-      
-      {/* 01. WKT_HUD_HEADER */}
-      <section>
-        <div className="flex items-center gap-4 text-white/30 mb-8 font-black uppercase text-[10px] tracking-[0.3em] italic">
-           <Activity size={14} /> COMMAND // WKT_OS_v4.2
+  if (terminationSuccess) {
+     return (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 animate-fade-in">
+           <CheckCircle2 className="text-[#3be282] drop-shadow-[0_0_15px_rgba(59,226,130,0.5)]" size={64} />
+           <h2 className="text-4xl font-black uppercase text-white tracking-tighter" style={{ fontFamily: 'Orbitron, sans-serif' }}>SESSION TERMINATED</h2>
+           <p className="text-[12px] font-bold text-[#a0a5b5] tracking-[0.3em] uppercase">SYNCING LOGS TO INTEL CORE...</p>
         </div>
-        <h1 className="text-[80px] font-black tracking-tighter uppercase leading-[0.8] mb-6 italic">
-          WKT_OS
-        </h1>
-        <div className="flex items-center gap-3 text-brand">
-          <Zap size={24} fill="#D0FF00" />
-          <p className="text-2xl font-black italic tracking-tighter uppercase">
-            STATUS: ACTIVE_COMBAT_SESSION
+     );
+  }
+
+  return (
+    <div className="max-w-[1400px] mx-auto space-y-6 animate-fade-in pb-32">
+      
+      {/* Top Banner Area */}
+      <section className="glass-card flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-4 text-[10px] font-bold text-[#9b5de5] uppercase tracking-[0.3em] mb-2">
+            <Activity size={14} /> COMMAND // WKT_OS_v4.2
+          </div>
+          <h1 className="text-5xl md:text-6xl font-black text-white uppercase tracking-tighter mb-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+            WKT OS
+          </h1>
+          <p className="text-[14px] font-bold text-[#a0a5b5] tracking-[0.2em] uppercase">
+            STATUS: <span className="text-[#9b5de5] animate-pulse">ACTIVE GYM SESSION</span>
           </p>
         </div>
       </section>
 
-      {/* 02. SESSION_TELEMETRY_STRIP */}
-      <section className="grid grid-cols-3 gap-12 py-8 border-y border-white/5 bg-white/[0.02]">
+      {/* SESSION_TELEMETRY_STRIP */}
+      <section className="grid grid-cols-3 gap-6">
          {[
-           { label: 'EXECUTION_TIME', val: elapsedTime, icon: Clock },
-           { label: 'VOLUME_DENSITY', val: `${totalVolume.toLocaleString()} KG`, icon: Database },
-           { label: 'MOVEMENT_COUNT', val: exercises.length, icon: Target }
+           { label: 'EXECUTION TIME', val: elapsedTime, icon: Clock },
+           { label: 'VOLUME DENSITY', val: `${totalVolume.toLocaleString()} KG`, icon: Database },
+           { label: 'MOVEMENT COUNT', val: exercises.length, icon: Target }
          ].map(m => (
-           <div key={m.label} className="flex flex-col items-center text-center">
-              <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">{m.label}</p>
-              <p className="text-4xl font-black italic text-white tracking-tighter">{m.val}</p>
+           <div key={m.label} className="glass-card flex flex-col items-center text-center">
+              <p className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-[0.4em] mb-4 flex items-center justify-center gap-2">
+                 <m.icon size={16} /> {m.label}
+              </p>
+              <p className="text-4xl font-black tracking-tighter text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>{m.val}</p>
            </div>
          ))}
       </section>
 
-      <div className="grid grid-cols-12 gap-16">
+      <div className="grid grid-cols-12 gap-6">
         {/* LEF_COL: FIELD_INPUT_PROTOCOL */}
-        <div className="col-span-8 space-y-16">
-          <section className="p-12 border border-white/5 bg-white/5 space-y-8">
-            <h3 className="text-3xl font-black italic tracking-tighter uppercase text-white">ADD_MOVEMENT_PROTOCOL</h3>
+        <div className="col-span-8 space-y-6">
+          <section className="glass-card space-y-6">
+            <h3 className="text-2xl font-black tracking-tighter uppercase text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>ADD MOVEMENT PROTOCOL</h3>
             <div className="flex gap-4">
               <select 
                 value={selectedExerciseId}
                 onChange={(e) => setSelectedExerciseId(e.target.value)}
-                className="flex-1 bg-black border border-white/10 p-6 text-white text-[12px] font-black uppercase tracking-widest outline-none focus:border-brand transition-all"
+                className="flex-1 bg-[#0e111a] border border-[#1a1e2b] p-4 text-white text-[12px] font-bold uppercase tracking-widest outline-none focus:border-[#9b5de5] transition-all"
               >
-                <option value="">SELECT_MOVEMENT</option>
+                <option value="">SELECT MOVEMENT</option>
                 {availableExercises.map(ex => (
                   <option key={ex.id} value={ex.id}>{ex.name}</option>
                 ))}
               </select>
               <button 
                 onClick={addExercise}
-                className="bg-brand text-black px-12 font-black uppercase tracking-widest text-[12px] hover:scale-105 transition-all"
+                className="btn-primary flex items-center gap-2"
               >
-                DEPLOY
+                <Plus size={16} /> DEPLOY
               </button>
             </div>
           </section>
 
-          <section className="space-y-12">
+          <section className="space-y-6">
             {exercises.map((ex, exIndex) => (
-              <div key={exIndex} className="space-y-6">
-                <div className="flex justify-between items-end border-b border-white/10 pb-4">
-                   <h3 className="text-4xl font-black italic tracking-tighter uppercase text-white">{ex.name}</h3>
-                   <button onClick={() => addSet(exIndex)} className="text-brand text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:opacity-100 opacity-60">
-                     <Plus size={12} /> ADD_SET
+              <div key={exIndex} className="glass-card space-y-6 border-l-4 border-l-[#9b5de5]">
+                <div className="flex justify-between items-center border-b border-[#1a1e2b] pb-4">
+                   <h3 className="text-2xl font-black tracking-tighter uppercase text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>{ex.name}</h3>
+                   <button onClick={() => addSet(exIndex)} className="text-[#9b5de5] text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 hover:text-[#f3a6ff] transition-colors">
+                     <Plus size={14} /> ADD SET
                    </button>
                 </div>
-                <div className="space-y-px">
+                <div className="space-y-2">
                   {ex.sets.map((set, setIndex) => (
-                    <div key={setIndex} className="grid grid-cols-12 gap-4 items-center py-4 bg-white/[0.02] px-6">
-                       <div className="col-span-1 text-[10px] font-black text-white/20 uppercase tabular-nums">S_0{setIndex+1}</div>
+                    <div key={setIndex} className="grid grid-cols-12 gap-4 items-center p-4 bg-[#0e111a] border border-[#1a1e2b]">
+                       <div className="col-span-1 text-[10px] font-bold text-[#a0a5b5] uppercase tabular-nums">S_0{setIndex+1}</div>
                        <div className="col-span-4 flex items-center gap-3">
                           <input 
                             type="number" 
                             value={set.weight || ''} 
                             onChange={(e) => updateSet(exIndex, setIndex, 'weight', parseInt(e.target.value))}
                             placeholder="LOAD"
-                            className="w-full bg-transparent border-b border-white/5 text-white p-2 font-black italic text-xl outline-none focus:border-brand"
+                            className="w-full bg-transparent border-b border-[#1a1e2b] text-white p-2 font-black text-xl outline-none focus:border-[#9b5de5] transition-colors"
                           />
-                          <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">KG</span>
+                          <span className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-widest">KG</span>
                        </div>
                        <div className="col-span-4 flex items-center gap-3">
                           <input 
@@ -238,12 +246,12 @@ export default function ActiveWorkoutPage() {
                             value={set.reps || ''} 
                             onChange={(e) => updateSet(exIndex, setIndex, 'reps', parseInt(e.target.value))}
                             placeholder="REPS"
-                            className="w-full bg-transparent border-b border-white/5 text-white p-2 font-black italic text-xl outline-none focus:border-brand"
+                            className="w-full bg-transparent border-b border-[#1a1e2b] text-white p-2 font-black text-xl outline-none focus:border-[#9b5de5] transition-colors"
                           />
-                          <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">REPS</span>
+                          <span className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-widest">REPS</span>
                        </div>
                        <div className="col-span-3 flex justify-end">
-                          <button onClick={() => removeSet(exIndex, setIndex)} className="p-2 text-white/10 hover:text-red-500 transition-colors">
+                          <button onClick={() => removeSet(exIndex, setIndex)} className="p-2 text-[#a0a5b5] hover:text-red-500 transition-colors">
                             <Trash2 size={16} />
                           </button>
                        </div>
@@ -256,34 +264,29 @@ export default function ActiveWorkoutPage() {
         </div>
 
         {/* RIGHT_COL: COMMAND_INTERACTIONS */}
-        <div className="col-span-4 space-y-8">
-           <section className="bg-white/5 p-10 border border-white/5 space-y-12">
-              <div className="space-y-4">
-                 <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.5em] italic">SYSTEM_ACTION</p>
+        <div className="col-span-4 space-y-6">
+           <section className="glass-card flex flex-col justify-between h-full border-[#9b5de5]/30">
+              <div className="space-y-4 mb-12">
+                 <p className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-[0.4em]">SYSTEM ACTION</p>
                  <button 
-                  onClick={() => {
-                    Analytics.track({ name: 'Execution_Mode_Launched' });
-                    window.location.href = '/workouts/execute';
-                  }}
-                  className="w-full bg-brand text-white p-3 font-black italic text-sm uppercase tracking-widest hover:scale-[1.02] transition-all flex items-center justify-center gap-2 group whitespace-nowrap overflow-hidden text-ellipsis"
+                  onClick={() => window.location.href = '/workouts/execute'}
+                  className="w-full border border-[#1a1e2b] text-[#a0a5b5] p-4 font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#1a1e2b] hover:text-white transition-all flex items-center justify-center gap-2"
                  >
-                   LAUNCH_FOCUS <Zap size={16} className="group-hover:animate-bounce" />
+                   LAUNCH FOCUS <Zap size={14} />
                  </button>
               </div>
 
-              <div className="space-y-4">
-                 <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.5em] italic">FINALIZE_SESSION</p>
+              <div className="space-y-4 mt-auto">
+                 <p className="text-[10px] font-bold text-[#a0a5b5] uppercase tracking-[0.4em]">FINALIZE SESSION</p>
                  <button 
                   onClick={handleTerminate}
                   disabled={isTerminating || exercises.length === 0}
-                  className="w-full border border-white/10 text-white p-3 font-black italic text-sm uppercase tracking-widest hover:text-red-500 hover:border-red-500 transition-all flex items-center justify-center gap-2 whitespace-nowrap overflow-hidden text-ellipsis"
+                  className="w-full bg-red-500/10 text-red-500 border border-red-500/30 p-4 font-black text-sm uppercase tracking-[0.2em] hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                  >
-                   TERMINATE <Square size={16} />
+                   {isTerminating ? 'TERMINATING...' : 'TERMINATE PROTOCOL'} <Square size={16} />
                  </button>
               </div>
            </section>
-
-
         </div>
       </div>
 
