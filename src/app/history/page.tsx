@@ -178,7 +178,7 @@ export default async function History() {
                                <div className="flex flex-col gap-3">
                                   <div className="text-[10px] text-blue-400 font-black uppercase tracking-widest mb-1">STRENGTHS_DETECTED</div>
                                   <div className="flex flex-col gap-2">
-                                    {JSON.parse(score.aiStrengths).map((s: string, i: number) => (
+                                    {JSON.parse(score.aiStrengths || '[]').map((s: string, i: number) => (
                                       <div key={i} className="flex items-start gap-3 group/item">
                                          <ChevronRight size={14} className="text-blue-500/50 group-hover/item:text-blue-400 mt-1 transition-colors" />
                                          <span className="text-sm text-white/60 group-hover/item:text-white/80 transition-colors">{s}</span>
@@ -191,7 +191,7 @@ export default async function History() {
                                <div className="flex flex-col gap-3">
                                   <div className="text-[10px] text-amber-500 font-black uppercase tracking-widest mb-1">OPTIMIZATION_REQUIRED</div>
                                   <div className="flex flex-col gap-2">
-                                    {JSON.parse(score.aiSuggestions).map((s: string, i: number) => (
+                                    {JSON.parse(score.aiSuggestions || '[]').map((s: string, i: number) => (
                                       <div key={i} className="flex items-start gap-3 group/item">
                                          <Target size={14} className="text-amber-500/50 group-hover/item:text-amber-400 mt-1 transition-colors" />
                                          <span className="text-sm text-white/60 group-hover/item:text-white/80 transition-colors">{s}</span>
@@ -227,7 +227,7 @@ export default async function History() {
                       <div className="flex items-center gap-2">
                         <span className="text-2xl font-black">{weeklyAnalysis.avgScore}%</span>
                         <Badge variant={weeklyAnalysis.trend === 'up' ? 'success' : 'warning'} className="text-[10px]">
-                          {weeklyAnalysis.trend.toUpperCase()}
+                          {(weeklyAnalysis.trend || 'neutral').toUpperCase()}
                         </Badge>
                       </div>
                    </div>

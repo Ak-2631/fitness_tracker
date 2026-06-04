@@ -68,7 +68,7 @@ export async function POST(req: Request) {
       targetCalories: user.targetCalories,
       targetProtein: user.targetProtein,
       targetCarbs: user.targetCarbs,
-      targetFats: user.targetFats,
+      targetFats: 0, // Fallback since targetFats is not in schema
     };
 
     // Aggregate workout data

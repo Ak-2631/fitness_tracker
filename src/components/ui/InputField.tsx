@@ -1,17 +1,19 @@
 'use client';
 
-import { InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes, ReactNode } from 'react';
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
   sublabel?: string;
+  icon?: ReactNode;
 }
 
 export default function InputField({ 
   label, 
   error, 
   sublabel,
+  icon,
   className = '', 
   ...props 
 }: InputFieldProps) {
