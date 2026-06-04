@@ -53,7 +53,7 @@ export default function Button({
       whileTap={{ scale: 0.98 }}
       className={`btn cursor-pointer font-black transition-all flex items-center justify-center gap-2 border-none uppercase ${getVariantStyles()} ${getSizeStyles()} ${className}`}
       disabled={isLoading || props.disabled}
-      {...props}
+      {...(props as any)}
     >
       {isLoading ? (
         <span className="flex items-center gap-2">

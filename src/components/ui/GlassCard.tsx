@@ -31,7 +31,7 @@ export default function GlassCard({
     <motion.div
       whileHover={hoverLift ? { borderColor: '#444' } : {}}
       className={`card border border-white/5 bg-black ${getPaddingStyles()} ${className}`}
-      {...props}
+      {...(props as any)}
     >
       {children}
     </motion.div>
